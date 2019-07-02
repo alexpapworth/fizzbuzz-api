@@ -1,0 +1,17 @@
+{
+  "name": "fizzbuzz",
+  "version": "1.0.0",
+  "description": "cli api for fizzbuzz app",
+  "main": "api.js",
+  "keywords": [],
+  "author": "Alex Papworth (https://github.com/alexpapworth/fizzbuzz-api)",
+  "license": "MIT",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "minimist": "^1.2.0",
+    "request": "^2.88.0"
+  },
+  "bin": {
+    "fizzbuzz": "./api.js"
+  }
+}
