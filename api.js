@@ -4,7 +4,6 @@ const request = require('request');
 const argv = require('minimist')(process.argv.slice(2));
 
 domain = "http://localhost:3000";
-// domain = "https://fizzbuzz.alexpapworth.co.uk";
 
 getAuthToken = new Promise(function(resolve, reject) {
 	file = __dirname+"/auth_token";

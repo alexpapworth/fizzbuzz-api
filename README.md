@@ -35,16 +35,4 @@ fizzbuzz --help
 
 This repository was built to work with [Fizzbuzz App](https://github.com/alexpapworth/fizzbuzz-app), a Ruby on Rails website.
 
-By default this api is configured to run off localhost:3000. You may switch it to point at the live website by modifying lines 6 and 7 in `api.js`
-
-```ruby
-domain = "http://localhost:3000";
-// domain = "https://fizzbuzz.alexpapworth.co.uk";
-```
-
-or 
-
-```ruby
-// domain = "http://localhost:3000";
-domain = "https://fizzbuzz.alexpapworth.co.uk";
-```
+By default this api is configured to run off localhost:3000. You'll want to have that running in another terminal so you can test this tool out.
