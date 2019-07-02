@@ -1,17 +1,10 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const request = require('request');
 const argv = require('minimist')(process.argv.slice(2));
-// console.log(argv.id);
 
-// fs.writeFile(__dirname+"auth_token", "Hey there!", function(err) {
-//     if(err) {
-//         return console.log(err);
-//     }
-
-//     console.log("The file was saved!");
-// }); 
-
-var auth_token;
+domain = "http://localhost:3000";
+// domain = "https://fizzbuzz.alexpapworth.co.uk";
 
 getAuthToken = new Promise(function(resolve, reject) {
 	file = __dirname+"/auth_token";
@@ -21,7 +14,6 @@ getAuthToken = new Promise(function(resolve, reject) {
 	  } else {
 	  	fs.readFile(file, "utf8", (err, data) => {
 		  if (err) throw err;
-		  console.log('got the token');
 		  data = data.replace(/\n$/, '')
 		  resolve(data);
 		});
@@ -32,16 +24,13 @@ getAuthToken = new Promise(function(resolve, reject) {
 
 async function sendDeleteRequest(path) {
 	getAuthToken.then(function(auth_token) {
-		console.log("auth_token:" + auth_token);
 		options = {
-			url: 'http://localhost:3000/api/v1/' + path,
+			url: domain+'/api/v1/' + path,
 			headers: {
 				Cookie: 'auth_token='+auth_token
 			},
 			json: true
 		};
-		console.log(options);
-		console.log();
 		request.delete(options, (err, res, body) => {
 			if (err) { return console.log(err); }
 			console.log(body);
@@ -58,16 +47,13 @@ async function sendDeleteRequest(path) {
 
 async function sendGetRequest(path) {
 	getAuthToken.then(function(auth_token) {
-		console.log("auth_token:" + auth_token);
 		options = {
-			url: 'http://localhost:3000/api/v1/' + path,
+			url: domain+'/api/v1/' + path,
 			headers: {
 				Cookie: 'auth_token='+auth_token
 			},
 			json: true
 		};
-		console.log(options);
-		console.log();
 		request.get(options, (err, res, body) => {
 			if (err) { return console.log(err); }
 			console.log(body);
@@ -77,16 +63,13 @@ async function sendGetRequest(path) {
 
 async function sendPostRequest(path) {
 	getAuthToken.then(function(auth_token) {
-		console.log("auth_token:" + auth_token);
 		options = {
-			url: 'http://localhost:3000/api/v1/' + path,
+			url: domain+'/api/v1/' + path,
 			headers: {
 				Cookie: 'auth_token='+auth_token
 			},
 			json: true
 		};
-		console.log(options);
-		console.log();
 		request.post(options, (err, res, body) => {
 			if (err) { return console.log(err); }
 			console.log(body);
@@ -191,7 +174,7 @@ if (argv._[0] == 'show') {
 			} else {
 				getAuthToken.then(function(auth_token) {
 					if (auth_token.length > 10) {
-						sendGetRequest("favourite/show");
+						sendGetRequest("favourites/show");
 					} else {
 						console.log("\nNo arguments given for `show favourite`\n");
 						console.log(" Choose a user using --id or --name");
@@ -257,55 +240,44 @@ if (argv._[0] == 'show') {
 if (argv.version == true) {
 	console.log("Fizzbuzz cli api v1.0.0");
 } else if (argv.help == true || argv._.length == 0) {
-	var help = "Usage: api.js <command> [options]\n\n";
+	var help = "Usage: fizzbuzz <command> [options]\n\n";
 	help += "Commands:";
-	help += "\n  node api.js show favourites\t\tShow information about favourites";
-	help += "\n  node api.js show numbers\t\tShow all numbers";
-	help += "\n  node api.js show number\t\tShow information about a single number";
-	help += "\n  node api.js show session\t\tShow information about current session";
-	help += "\n  node api.js show users\t\tShow all users ";
-	help += "\n  node api.js show user\t\t\tShow information about a single user";
+	help += "\n  fizzbuzz show favourites\t\tShow information about favourites";
+	help += "\n  fizzbuzz show favourite\t\tShow single users favourites";
+	help += "\n  fizzbuzz show numbers\t\t\tShow all numbers";
+	help += "\n  fizzbuzz show number\t\t\tShow information about a single number";
+	help += "\n  fizzbuzz show session\t\t\tShow information about current session";
+	help += "\n  fizzbuzz show users\t\t\tShow all users";
+	help += "\n  fizzbuzz show user\t\t\tShow information about a single user";
+	
 	help += "\n\nOptions:";
 	help += "\n  --version\tShow version number";
 	help += "\n  --help\tShow help";
+	
 	help += "\n\nExamples:";
-	help += "\n  node api.js show users\t\t\t\tlist of all users";
-	help += "\n  node api.js show user --id 1\t\t\t\tshow user with id 1";
-	help += "\n  node api.js show user --name HealthyCactusPlant\tshow user with name of HealthyCactusPlant";
-	help += "\n  node api.js create user\t\t\t\tcreate user with random name";
-	help += "\n  node api.js create user --name HealthyCactusPlant\tcreate user with name of HealthyCactusPlant";
-	help += "\n  node api.js destroy user --id 1\t\t\tdestroy user with id 1";
-	help += "\n  node api.js destroy user --name HealthyCactusPlant\tdestroy user with name of HealthyCactusPlant";
-	help += "\n\n  node api.js show session\t\t\t\tshow session for this cli";
-	help += "\n  node api.js create session --id 1\t\t\tcreate session for user with id 1";
-	help += "\n  node api.js create session --name HealthyCactusPlant\tcreate session for user with name HealthyCactusPlant";
-	help += "\n  node api.js destroy session --id 1\t\t\tshow session for this cli";
-	help += "\n\n  node api.js show number --id 1\t\t\tshow number with id 1";
-	help += "\n  node api.js show numbers\t\t\t\tshow all numbers";
-	help += "\n  node api.js show numbers --page 1 --size 100\t\tshow 100 numbers starting at page 1";
-	help += "\n\n  node api.js show favourites\t\t\t\tshow favourites for current session user";
-	help += "\n  node api.js show favourites --id 1\t\t\tshow favourites for user with id 1";
-	help += "\n  node api.js show favourites --name HealthyCactusPlant\tshow favourites for user with name HealthyCactusPlant";
-	help += "\n  node api.js create favourite --number 1\t\tcreate favourite for current session user for number 1";
-	help += "\n  node api.js destroy favourite --number 1\t\tdestroy favourite for current session user for number 1";
+	help += "\n  fizzbuzz show users\t\t\t\t\tlist of all users";
+	help += "\n  fizzbuzz show user --id 1\t\t\t\tshow user with id 1";
+	help += "\n  fizzbuzz show user --name HealthyCactusPlant\t\tshow user with name of HealthyCactusPlant";
+	help += "\n  fizzbuzz create user\t\t\t\t\tcreate user with random name";
+	help += "\n  fizzbuzz create user --name HealthyCactusPlant\tcreate user with name of HealthyCactusPlant";
+	help += "\n  fizzbuzz destroy user --id 1\t\t\t\tdestroy user with id 1";
+	help += "\n  fizzbuzz destroy user --name HealthyCactusPlant\tdestroy user with name of HealthyCactusPlant";
+	
+	help += "\n\n  fizzbuzz show session\t\t\t\t\tshow session for this cli";
+	help += "\n  fizzbuzz create session --id 1\t\t\tcreate session for user with id 1";
+	help += "\n  fizzbuzz create session --name HealthyCactusPlant\tcreate session for user with name HealthyCactusPlant";
+	help += "\n  fizzbuzz destroy session --id 1\t\t\tshow session for this cli";
+	
+	help += "\n\n  fizzbuzz show number --id 1\t\t\t\tshow number with id 1";
+	help += "\n  fizzbuzz show numbers\t\t\t\t\tshow all numbers";
+	help += "\n  fizzbuzz show numbers --page 1 --size 100\t\tshow 100 numbers starting at page 1";
+	
+	help += "\n\n  fizzbuzz show favourites\t\t\t\tshow favourites for current session user";
+	help += "\n  fizzbuzz show favourites --id 1\t\t\tshow favourites for user with id 1";
+	help += "\n  fizzbuzz show favourites --name HealthyCactusPlant\tshow favourites for user with name HealthyCactusPlant";
+	help += "\n  fizzbuzz create favourite --number 1\t\t\tcreate favourite for current session user for number 1";
+	help += "\n  fizzbuzz destroy favourite --number 1\t\t\tdestroy favourite for current session user for number 1";
 	help += "\n\n";
+
 	console.log(help);
 }
-
-
-// Usage: api.js <command> [options]
-
-// Commands:
-//   api.js show user  | Show information about users
-
-// Options:
-//   --version   Show version number                                                                              [boolean]
-//   -h, --help  Show help                                                                                        [boolean]
-//   -                                                                                                           [required]
-
-// Examples:
-//   api.js show user --all                      | Show all users
-//   api.js show user --id 1                     | Show user with id 1
-//   api.js show user --name HealthyCactusPlant  | Show user with name HealthyCactusPlant
-
-// Missing required argument: 
